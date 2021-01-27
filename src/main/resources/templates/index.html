@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="description" content=""/>
+        <meta name="author" content=""/>
+        <link rel="icon" th:href="@{/dist/img/favicons/favicon.png}" />
+
+        <title>Skripsi</title>
+
+        <!-- Bootstrap core CSS -->
+        <link th:href="@{/dist/css/bootstrap.min.css}" rel="stylesheet"/>
+
+        <!-- Custom styles for this template -->
+        <link th:href="@{/dist/css/dashboard.css}" rel="stylesheet"/>
+    </head>
+
+    <body>
+        <!--<div th:include="fragments/navigation::nav">-->
+
+
+
+        <div class="container-fluid">
+            <div class="row">
+                <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+                    <div class="sidebar-sticky">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="/">
+                                    <span data-feather="home"></span>
+                                    Dashboard <span class="sr-only">(current)</span>
+                                </a>
+                            </li>
+
+                        </ul>
+                    </div>
+                </nav>
+
+                <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4">
+                    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                        <h1 class="h2">Median Filter</h1>
+                    </div>
+
+                    <!-- Content -->
+                    <div>
+                        <form id="form"  method="POST"  enctype="multipart/form-data">
+                            <div class="form-group row">
+                                <label for="" class="col-sm-4">Input Image</label>
+
+
+                                <div class="input-group" >
+                                    <input type="file" name="file" id="file" class="form-control ">
+
+                                </div>
+                                <div class="input-group" >
+                                    <img id="myImg" src="#" alt="your image" />
+                                </div>
+                                <div class="input-group" >
+                                    <button type="button" id="process-file-button" class="btn btn-primary">Process</button>
+                                </div>
+                                 <div class="input-group" id="output" >
+                                    <img id="outputimg" src="#" alt="output" />
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+
+
+                    <!-- /.End Content -->
+                </main>
+            </div>
+        </div>
+
+        <!-- Bootstrap core JavaScript
+        ================================================== -->
+        <!-- Placed at the end of the document so the pages load faster -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+        <script th:src="@{/dist/js/jquery.min.js}"></script>
+        <script th:src="@{/dist/js/popper.min.js}"></script>
+        <script th:src="@{/dist/js/bootstrap.min.js}"></script>
+
+        <!-- Icons -->
+        <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+        <script>
+            $(function () {
+                $(":file").change(function () {
+                    if (this.files && this.files[0]) {
+                        var reader = new FileReader();
+                        reader.onload = imageIsLoaded;
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+            });
+
+            function imageIsLoaded(e) {
+                $('#myImg').attr('src', e.target.result);
+            }
+            ;
+
+            $('#process-file-button').on('click', function (e) {
+                 var formData = new FormData();
+            formData.append('file', $('input[type=file]')[0].files[0]);
+                $.ajax({
+                    type: 'post',
+                    url: '/medianfilter',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (response) {
+                        console.log('asd'+response);
+                           document.getElementById("outputimg").src = "data:image/png;base64," + response;
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>
